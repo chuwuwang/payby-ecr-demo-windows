@@ -17,7 +17,7 @@ import com.payby.pos.ecr.ui.theme.mainThemeColor
 import com.payby.pos.ecr.ui.theme.titleFontSize
 import com.payby.pos.ecr.ui.theme.whiteColor
 
-object Sidebar {
+object NavigationBar {
 
     const val MENU_FEAT_SALE = 0
     const val MENU_FEAT_VOID = 1
@@ -26,11 +26,11 @@ object Sidebar {
 }
 
 @Composable
-fun showSidebar(modifier: Modifier, index: Int, onClick: (Int) -> Unit) {
+fun showNavigationBar(modifier: Modifier, index: Int, onClick: (Int) -> Unit) {
     Column(modifier) {
-        itemView(Modifier.clickable { onClick(Sidebar.MENU_FEAT_SALE) }, "Sale", resourcePath = "images/ic_purchase_black.png", if (index == Sidebar.MENU_FEAT_SALE) mainThemeColor else whiteColor)
-        itemView(Modifier.clickable { onClick(Sidebar.MENU_FEAT_VOID) }, "Void", resourcePath = "images/ic_void_black.png", if (index == Sidebar.MENU_FEAT_VOID) mainThemeColor else whiteColor)
-        itemView(Modifier.clickable { onClick(Sidebar.MENU_FEAT_CONFIGURE) }, "Configuration", resourcePath = "images/ic_configure_black.png", if (index == Sidebar.MENU_FEAT_CONFIGURE) mainThemeColor else whiteColor)
+        itemView(Modifier.clickable { onClick(NavigationBar.MENU_FEAT_SALE) }, "Sale", resourcePath = "images/ic_purchase_black.png", if (index == NavigationBar.MENU_FEAT_SALE) mainThemeColor else whiteColor)
+        itemView(Modifier.clickable { onClick(NavigationBar.MENU_FEAT_VOID) }, "Void", resourcePath = "images/ic_void_black.png", if (index == NavigationBar.MENU_FEAT_VOID) mainThemeColor else whiteColor)
+        itemView(Modifier.clickable { onClick(NavigationBar.MENU_FEAT_CONFIGURE) }, "Configuration", resourcePath = "images/ic_configure_black.png", if (index == NavigationBar.MENU_FEAT_CONFIGURE) mainThemeColor else whiteColor)
         val boxModifier = Modifier.fillMaxHeight()
         Box(modifier = boxModifier) {
             Text(modifier = Modifier.align(Alignment.BottomStart).padding(start = 24.dp, bottom = 24.dp), fontSize = 14.sp, text = "© PayBy Team 2024", color = whiteColor)

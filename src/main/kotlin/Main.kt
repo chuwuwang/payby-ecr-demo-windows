@@ -17,7 +17,9 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import com.payby.pos.ecr.ui.main.showSidebar
+import com.payby.pos.ecr.ui.configure.showConfiguration
+import com.payby.pos.ecr.ui.main.NavigationBar
+import com.payby.pos.ecr.ui.main.showNavigationBar
 import com.payby.pos.ecr.ui.theme.whiteColor
 
 @Composable
@@ -29,7 +31,7 @@ fun app() {
             val onSidebarClick: (Int) -> Unit = { current.value = it }
             val sidebarBackground = Color(0xFF2E2E2E)
             var modifier = Modifier.weight(1f).fillMaxHeight().background(sidebarBackground)
-            showSidebar(modifier, current.value, onSidebarClick)
+            showNavigationBar(modifier, current.value, onSidebarClick)
 
             modifier = Modifier.weight(3f).fillMaxHeight().background(whiteColor)
             BoxWithConstraints(modifier = modifier) { switchPage(current, modifier) }
@@ -39,7 +41,9 @@ fun app() {
 
 @Composable
 private fun switchPage(index: MutableState<Int>, modifier: Modifier) {
-
+    if (index.value == NavigationBar.MENU_FEAT_CONFIGURE) {
+        showConfiguration(modifier)
+    }
 }
 
 fun main() = application {

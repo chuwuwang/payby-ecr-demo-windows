@@ -12,4 +12,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "payby-new-pos-ecr-windows"
+rootProject.name = "payby-ecr-demo-windows"
