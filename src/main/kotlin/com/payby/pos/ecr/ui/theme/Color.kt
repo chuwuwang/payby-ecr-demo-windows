@@ -16,7 +16,7 @@ val textSecondaryColor = Color(0xFF80868B)
 
 val mainThemeColor = Color(0xFF00A75D)
 val separateColor = Color(0xFFEBEEF2)
-val backgroundColor = Color(0xFFF9F9F9).convert(ColorSpaces.CieXyz)
+val backgroundColor = Color(0xFFF4F4F4).convert(ColorSpaces.CieXyz)
 
 val successColor = Color(0xFF67C23A).convert(ColorSpaces.CieXyz)
 val warningColor = Color(0xFFEC5447).convert(ColorSpaces.CieXyz)
