@@ -47,18 +47,7 @@ private fun RowScope.content(list: SnapshotStateList<BluetoothDevice>) {
     val modifier = Modifier.weight(3.0f).background(whiteColor)
     val bindItem: @Composable (BluetoothDevice, Int) -> Unit = { item, _ ->
         Column {
-            Row(Modifier.height(50.dp).padding(start = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                val text = if (item.name != null && item.name.length > 0) {
-                    item.name + " - " + item.address
-                } else {
-                    item.address
-                }
-                val textStyle = TextStyle(color = textSecondaryColor, fontFamily = mediumFontFamily, fontSize = 16.sp)
-                Text(text, style = textStyle)
-                if (item.isSelected) {
-                    Icon(painter = painterResource("images/ic_select_right.png"), contentDescription = null, modifier = Modifier.size(24.dp)., tint = mainThemeColor)
-                }
-            }
+            itemView(item)
             CommonUiUtil.horizontalDivider()
         }
     }
@@ -71,15 +60,42 @@ private fun RowScope.content(list: SnapshotStateList<BluetoothDevice>) {
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+@Composable
+private fun itemView(device: BluetoothDevice) {
+    val text = if (device.name != null && device.name.length > 0) {
+        device.name + " - " + device.address
+    } else {
+        device.address
+    }
+    Row(Modifier.height(60.dp).padding(start = 16.dp, end = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+        val textStyle = TextStyle(color = textSecondaryColor, fontFamily = mediumFontFamily, fontSize = 16.sp)
+        Text(text, style = textStyle)
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) { bluetoothStatus(device) }
+    }
+}
+
+@Composable
+private fun bluetoothStatus(device: BluetoothDevice) {
+    var status = ""
+    if (device.isSelected) {
+        status = "Connecting"
+    } else if (device.isPaired) {
+        status = "Connected"
+    }
+    if (status.length == 0) return
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(painter = painterResource("images/ic_select_right.png"), contentDescription = null, modifier = Modifier.size(24.dp), tint = mainThemeColor)
+        Text(status, modifier = Modifier.padding(start = 8.dp), color = textSecondaryColor, textAlign = TextAlign.Start, fontSize = 16.sp, fontFamily = mediumFontFamily)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 @Composable
 private fun RowScope.sidebar() {
     val modifier = Modifier.height(IntrinsicSize.Min).weight(1.3f).padding(start = 16.dp, end = 16.dp).clip(radius_8).background(whiteColor)
-    Column(modifier) {
-        menuItem("Bluetooth EDR", "images/ic_unselect.png", mainThemeColor)
-    }
+    Column(modifier) { menuItem("Bluetooth EDR", "images/ic_unselect.png", mainThemeColor) }
 }
 
 @Composable
