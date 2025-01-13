@@ -17,7 +17,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import com.payby.pos.ecr.ui.configure.showConfiguration
+import com.payby.pos.ecr.ui.configure.ConfigurationScreen
 import com.payby.pos.ecr.ui.main.NavigationBar
 import com.payby.pos.ecr.ui.main.showNavigationBar
 import com.payby.pos.ecr.ui.theme.whiteColor
@@ -42,7 +42,7 @@ fun app() {
 @Composable
 private fun switchPage(index: MutableState<Int>, modifier: Modifier) {
     if (index.value == NavigationBar.MENU_FEAT_CONFIGURE) {
-        showConfiguration(modifier)
+        ConfigurationScreen.build(modifier)
     }
 }
 
