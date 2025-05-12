@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.protobuf") version "0.9.4"
 }
 
 group = "com.payby.pos"
@@ -27,6 +28,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
 
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.protobuf:protobuf-java:3.25.3")
 
     implementation("commons-io:commons-io:2.18.0")
 
@@ -34,12 +36,18 @@ dependencies {
     implementation("net.sf.bluecove:bluecove-gpl:2.1.0")
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.3"
+    }
+}
+
 compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "payby-new-pos-ecr-windows"
+            packageName = "payby-ecr-demo-windows"
             packageVersion = "1.0.0"
         }
     }
