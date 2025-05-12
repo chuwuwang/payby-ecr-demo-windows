@@ -44,7 +44,7 @@ private fun Content(current: MutableState<Int>) {
 @Composable
 private fun SwitchPage(index: MutableState<Int>, modifier: Modifier) {
     if (index.value == Sidebar.MENU_FEAT_CONFIGURE) {
-        ConfigurationScreen.build(modifier)
+        ConfigurationScreen(modifier)
     }
 }
 
