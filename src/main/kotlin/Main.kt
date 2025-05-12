@@ -18,30 +18,32 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import com.payby.pos.ecr.ui.configure.ConfigurationScreen
-import com.payby.pos.ecr.ui.main.NavigationBar
-import com.payby.pos.ecr.ui.main.showNavigationBar
+import com.payby.pos.ecr.ui.main.Sidebar
 import com.payby.pos.ecr.ui.theme.whiteColor
 
 @Composable
 @Preview
 fun app() {
     val current = remember { mutableStateOf(0) }
-    MaterialTheme {
-        Row {
-            val onSidebarClick: (Int) -> Unit = { current.value = it }
-            val sidebarBackground = Color(0xFF2E2E2E)
-            var modifier = Modifier.weight(1f).fillMaxHeight().background(sidebarBackground)
-            showNavigationBar(modifier, current.value, onSidebarClick)
+    MaterialTheme { Content(current) }
+}
 
-            modifier = Modifier.weight(3f).fillMaxHeight().background(whiteColor)
-            BoxWithConstraints(modifier = modifier) { switchPage(current, modifier) }
-        }
+@Composable
+private fun Content(current: MutableState<Int>) {
+    Row {
+        val sidebarBackground = Color(0xFF2E2E2E)
+        val onSidebarClick: (Int) -> Unit = { current.value = it }
+        val modifierSidebar = Modifier.weight(1f).fillMaxHeight().background(sidebarBackground)
+        Sidebar(modifierSidebar, current.value, onSidebarClick)
+
+        val modifier = Modifier.weight(3f).fillMaxHeight().background(whiteColor)
+        BoxWithConstraints(modifier = modifier) { SwitchPage(current, modifier) }
     }
 }
 
 @Composable
-private fun switchPage(index: MutableState<Int>, modifier: Modifier) {
-    if (index.value == NavigationBar.MENU_FEAT_CONFIGURE) {
+private fun SwitchPage(index: MutableState<Int>, modifier: Modifier) {
+    if (index.value == Sidebar.MENU_FEAT_CONFIGURE) {
         ConfigurationScreen.build(modifier)
     }
 }
@@ -49,5 +51,5 @@ private fun switchPage(index: MutableState<Int>, modifier: Modifier) {
 fun main() = application {
     val position = WindowPosition.Aligned(Alignment.Center)
     val windowState = WindowState(size = DpSize(1200.dp, 800.dp), position = position)
-    Window(title = "ECR Tools", state = windowState, onCloseRequest = ::exitApplication) { app() }
+    Window(title = "ECR Demo", state = windowState, onCloseRequest = ::exitApplication) { app() }
 }

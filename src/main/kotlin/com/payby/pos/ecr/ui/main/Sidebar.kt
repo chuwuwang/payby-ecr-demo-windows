@@ -17,7 +17,7 @@ import com.payby.pos.ecr.ui.theme.mainThemeColor
 import com.payby.pos.ecr.ui.theme.titleFontSize
 import com.payby.pos.ecr.ui.theme.whiteColor
 
-object NavigationBar {
+object Sidebar {
 
     const val MENU_FEAT_SALE = 0
     const val MENU_FEAT_VOID = 1
@@ -26,20 +26,20 @@ object NavigationBar {
 }
 
 @Composable
-fun showNavigationBar(modifier: Modifier, index: Int, onClick: (Int) -> Unit) {
+fun Sidebar(modifier: Modifier, index: Int, onClick: (Int) -> Unit) {
     Column(modifier) {
-        itemView(Modifier.clickable { onClick(NavigationBar.MENU_FEAT_SALE) }, "Sale", resourcePath = "images/ic_purchase_black.png", if (index == NavigationBar.MENU_FEAT_SALE) mainThemeColor else whiteColor)
-        itemView(Modifier.clickable { onClick(NavigationBar.MENU_FEAT_VOID) }, "Void", resourcePath = "images/ic_void_black.png", if (index == NavigationBar.MENU_FEAT_VOID) mainThemeColor else whiteColor)
-        itemView(Modifier.clickable { onClick(NavigationBar.MENU_FEAT_CONFIGURE) }, "Configuration", resourcePath = "images/ic_configure_black.png", if (index == NavigationBar.MENU_FEAT_CONFIGURE) mainThemeColor else whiteColor)
-        val boxModifier = Modifier.fillMaxHeight()
-        Box(modifier = boxModifier) {
+        ItemView(Modifier.clickable { onClick(Sidebar.MENU_FEAT_SALE) }, "Sale", resourcePath = "images/ic_purchase_black.png", if (index == Sidebar.MENU_FEAT_SALE) mainThemeColor else whiteColor)
+        ItemView(Modifier.clickable { onClick(Sidebar.MENU_FEAT_VOID) }, "Void", resourcePath = "images/ic_void_black.png", if (index == Sidebar.MENU_FEAT_VOID) mainThemeColor else whiteColor)
+        ItemView(Modifier.clickable { onClick(Sidebar.MENU_FEAT_CONFIGURE) }, "Configuration", resourcePath = "images/ic_configure_black.png", if (index == Sidebar.MENU_FEAT_CONFIGURE) mainThemeColor else whiteColor)
+        val modifierBox = Modifier.fillMaxHeight()
+        Box(modifier = modifierBox) {
             Text(modifier = Modifier.align(Alignment.BottomStart).padding(start = 24.dp, bottom = 24.dp), fontSize = 14.sp, text = "© PayBy Team 2024", color = whiteColor)
         }
     }
 }
 
 @Composable
-private fun itemView(modifier: Modifier, text: String, resourcePath: String, tint: Color) {
+private fun ItemView(modifier: Modifier, text: String, resourcePath: String, tint: Color) {
     val marginStart = 24.dp
     val paddingStart = 12.dp
     Row(modifier.fillMaxWidth().height(64.dp).padding(start = marginStart), verticalAlignment = Alignment.CenterVertically) {
