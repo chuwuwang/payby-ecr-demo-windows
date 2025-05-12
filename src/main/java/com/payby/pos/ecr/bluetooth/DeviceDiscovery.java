@@ -5,12 +5,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DeviceDiscovery {
 
-    private DiscoveryAgent discoveryAgent;
-
     private final Object discoveryLock = new Object();
-
     private final ConcurrentHashMap<String, RemoteDevice> mapDevice = new ConcurrentHashMap<>();
 
+    private DiscoveryAgent discoveryAgent;
     private OnDeviceDiscoveryListener listener;
 
     public void setOnDeviceDiscoveryListener(OnDeviceDiscoveryListener l) {
@@ -66,6 +64,9 @@ public class DeviceDiscovery {
                     e.printStackTrace();
                 }
                 System.out.println("Find Device: " + friendlyName + " (" + bluetoothAddress + ")");
+                if (listener != null) {
+                    listener.onDeviceDiscovered(remoteDevice);
+                }
                 mapDevice.put(bluetoothAddress, remoteDevice);
             } else {
                 System.out.println("Find Device: null");
@@ -95,7 +96,9 @@ public class DeviceDiscovery {
 
     };
 
-    interface OnDeviceDiscoveryListener {
+    public interface OnDeviceDiscoveryListener {
+
+        void onDeviceDiscovered(RemoteDevice remoteDevice);
 
         void onDeviceDiscovered(ConcurrentHashMap<String, RemoteDevice> map);
 

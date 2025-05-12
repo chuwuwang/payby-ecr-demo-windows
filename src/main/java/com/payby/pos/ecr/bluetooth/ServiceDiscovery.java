@@ -12,7 +12,7 @@ public class ServiceDiscovery {
     private final Object discoveryLock = new Object();
 
     private int transId;
-    private Vector<String> servicesList = new Vector<>();
+    private final Vector<String> servicesList = new Vector<>();
 
     private OnServiceDiscoveryListener listener;
 

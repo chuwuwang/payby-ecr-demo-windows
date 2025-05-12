@@ -17,7 +17,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.payby.pos.ecr.bluetooth.BluetoothDevice
-import com.payby.pos.ecr.bluetooth.DeviceDiscovery
 import com.payby.pos.ecr.ui.CommonUiUtil
 import com.payby.pos.ecr.ui.theme.mainThemeColor
 import com.payby.pos.ecr.ui.theme.mediumFontFamily
@@ -78,20 +77,4 @@ private fun BluetoothStatus(device: BluetoothDevice) {
         Icon(painter = painterResource("images/ic_select_right.png"), contentDescription = null, modifier = Modifier.size(24.dp), tint = mainThemeColor)
         Text(status, modifier = Modifier.padding(start = 8.dp), color = textSecondaryColor, textAlign = TextAlign.Start, fontSize = 16.sp, fontFamily = mediumFontFamily)
     }
-}
-
-object ClassicBTConfig {
-
-    private fun xx() {
-        val deviceDiscovery = DeviceDiscovery()
-        deviceDiscovery.setOnDeviceDiscoveryListener {
-
-        }
-        deviceDiscovery.startDiscoveryDevice()
-    }
-
-
-
-
-
 }

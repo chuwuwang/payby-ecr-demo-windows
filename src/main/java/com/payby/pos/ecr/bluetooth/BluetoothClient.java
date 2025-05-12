@@ -37,6 +37,11 @@ public class BluetoothClient {
 
 
         @Override
+        public void onDeviceDiscovered(RemoteDevice remoteDevice) {
+
+        }
+
+        @Override
         public void onDeviceDiscovered(ConcurrentHashMap<String, RemoteDevice> map) {
             RemoteDevice remoteDevice = map.get("0C2576939F5E");
             if (remoteDevice != null) {
