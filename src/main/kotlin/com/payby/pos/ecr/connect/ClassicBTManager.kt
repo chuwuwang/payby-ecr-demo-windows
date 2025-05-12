@@ -12,15 +12,15 @@ import javax.bluetooth.RemoteDevice
 import javax.microedition.io.Connector
 import javax.microedition.io.StreamConnection
 
-class ClassicBTManager {
+object ClassicBTManager {
 
     private val deviceDiscovery by lazy { DeviceDiscovery() }
     private val serviceDiscovery by lazy { ServiceDiscovery() }
     private val mapLock = ConcurrentHashMap<String, RemoteDevice>()
 
-    private var inputStream: InputStream? = null
-    private var outputStream: OutputStream? = null
-    private var streamConnection: StreamConnection? = null
+    private var inputStream: InputStream ? = null
+    private var outputStream: OutputStream ? = null
+    private var streamConnection: StreamConnection ? = null
 
     fun startDiscovery(list: SnapshotStateList<BluetoothDevice>) {
         val deviceDiscoveryListener = object : DeviceDiscovery.OnDeviceDiscoveryListener {

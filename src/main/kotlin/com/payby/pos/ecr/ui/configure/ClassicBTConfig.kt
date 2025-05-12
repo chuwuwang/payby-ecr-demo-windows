@@ -17,10 +17,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.payby.pos.ecr.bluetooth.BluetoothDevice
+import com.payby.pos.ecr.connect.ClassicBTManager
 import com.payby.pos.ecr.ui.CommonUiUtil
 import com.payby.pos.ecr.ui.theme.mainThemeColor
 import com.payby.pos.ecr.ui.theme.mediumFontFamily
 import com.payby.pos.ecr.ui.theme.textSecondaryColor
+import com.payby.pos.ecr.utils.ThreadPoolManager
 import com.payby.pos.ecr.utils.isEmpty
 import com.payby.pos.ecr.utils.isValid
 
@@ -47,6 +49,7 @@ fun ClassicBTConfig(modifier: Modifier) {
         val items = bluetoothDevices.toList()
         itemsIndexed(items) { index, data -> bindItem(data, index) }
     }
+    // ThreadPoolManager.executeCacheTask { ClassicBTManager.startDiscovery(bluetoothDevices) }
 }
 
 @Composable

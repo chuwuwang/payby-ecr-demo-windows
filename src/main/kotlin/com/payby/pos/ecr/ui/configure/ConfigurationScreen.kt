@@ -20,7 +20,7 @@ fun ConfigurationScreen(modifier: Modifier) {
     var modifier = modifier.background(backgroundColor)
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Sidebar()
-        modifier = Modifier.weight(3.0f).background(whiteColor)
+        modifier = Modifier.weight(3.0f).padding(16.dp).clip(radius_8).background(whiteColor)
         ClassicBTConfig(modifier)
     }
 }
@@ -28,7 +28,7 @@ fun ConfigurationScreen(modifier: Modifier) {
 @Composable
 private fun RowScope.Sidebar() {
     val modifier = Modifier.height(IntrinsicSize.Min).weight(1.3f)
-        .padding(start = 16.dp, end = 16.dp).clip(radius_8).background(whiteColor)
+        .padding(start = 16.dp).clip(radius_8).background(whiteColor)
     Column(modifier) { ItemView("Bluetooth EDR", mainThemeColor) }
 }
 
