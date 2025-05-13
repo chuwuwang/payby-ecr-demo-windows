@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,18 +22,12 @@ import com.payby.pos.ecr.ui.theme.boldFontFamily
 import com.payby.pos.ecr.ui.theme.mainThemeColor
 import com.payby.pos.ecr.ui.theme.mediumFontFamily
 import com.payby.pos.ecr.ui.theme.textSecondaryColor
+import com.payby.pos.ecr.utils.ThreadPoolManager
 import com.payby.pos.ecr.utils.isEmpty
 import com.payby.pos.ecr.utils.isValid
 
 @Composable
-fun ClassicBTConfig(modifier: Modifier) {
-    val bluetoothDevices = remember { mutableStateListOf<BluetoothDevice>() }
-    for (i in 0..8) {
-        val bluetoothDevice = BluetoothDevice()
-        bluetoothDevice.address = "00:11:22:33:44:55"
-        bluetoothDevice.name = "Device $i"
-        bluetoothDevices.add(bluetoothDevice)
-    }
+fun ClassicBTConfig(modifier: Modifier, viewModel: ConfigurationViewModel) {
     val bindItem: @Composable (BluetoothDevice, Int) -> Unit = { item, _ ->
         Column {
             ItemView(item)
@@ -44,10 +36,11 @@ fun ClassicBTConfig(modifier: Modifier) {
     }
     val state = rememberLazyListState()
     LazyColumn(modifier, state = state) {
-        val items = bluetoothDevices.toList()
+        val items = viewModel.bluetoothDevices
         itemsIndexed(items) { index, data -> bindItem(data, index) }
     }
-    // ThreadPoolManager.executeCacheTask { ClassicBTManager.startDiscovery(bluetoothDevices) }
+    if (viewModel.bluetoothDevices.size > 0) return
+    ThreadPoolManager.executeCacheTask { ClassicBTManager.startDiscovery(viewModel.bluetoothDevices) }
 }
 
 @Composable

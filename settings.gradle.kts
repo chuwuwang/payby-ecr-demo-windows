@@ -4,6 +4,7 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven("https://jitpack.io")
     }
     plugins {
         kotlin("jvm").version(extra["kotlin.version"] as String)

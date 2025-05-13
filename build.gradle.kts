@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.payby.pos"
-version = "1.0-SNAPSHOT"
+version = "1.1-SNAPSHOT"
 
 repositories {
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
@@ -32,6 +32,9 @@ dependencies {
 
     implementation("commons-io:commons-io:2.18.0")
 
+    // widget
+    implementation("io.github.dokar3:sonner:0.3.8")
+
     implementation("io.ultreia:bluecove:2.1.1")
     implementation("net.sf.bluecove:bluecove-gpl:2.1.0")
 }
@@ -48,7 +51,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "payby-ecr-demo-windows"
-            packageVersion = "1.0.0"
+            packageVersion = "1.1.1"
         }
     }
 }

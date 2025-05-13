@@ -16,12 +16,12 @@ import androidx.compose.ui.unit.sp
 import com.payby.pos.ecr.ui.theme.*
 
 @Composable
-fun ConfigurationScreen(modifier: Modifier) {
+fun ConfigurationScreen(modifier: Modifier, viewModel: ConfigurationViewModel) {
     var modifier = modifier.background(backgroundColor)
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Sidebar()
         modifier = Modifier.weight(3.0f).padding(16.dp).clip(radius_8).background(whiteColor)
-        ClassicBTConfig(modifier)
+        ClassicBTConfig(modifier, viewModel)
     }
 }
 

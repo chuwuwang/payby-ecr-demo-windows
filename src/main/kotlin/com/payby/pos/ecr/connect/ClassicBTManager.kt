@@ -1,7 +1,6 @@
 package com.payby.pos.ecr.connect
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.payby.pos.ecr.bluetooth.BluetoothDevice
 import com.payby.pos.ecr.bluetooth.DeviceDiscovery
 import com.payby.pos.ecr.bluetooth.ServiceDiscovery
 import com.payby.pos.ecr.utils.IOHelper
@@ -60,7 +59,7 @@ object ClassicBTManager {
         val device = BluetoothDevice()
         device.name = name
         device.address = address
-        device.isPaired = remoteDevice.isAuthenticated
+        device.status.value = if (remoteDevice.isAuthenticated) BluetoothDevice.STATUS_PAIRED else BluetoothDevice.STATUS_DISCONNECTED
         list.add(device)
         mapLock[address] = remoteDevice
     }

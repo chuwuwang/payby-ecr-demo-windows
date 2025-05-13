@@ -18,6 +18,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import com.payby.pos.ecr.ui.configure.ConfigurationScreen
+import com.payby.pos.ecr.ui.configure.ConfigurationViewModel
 import com.payby.pos.ecr.ui.main.Sidebar
 import com.payby.pos.ecr.ui.theme.whiteColor
 
@@ -44,7 +45,8 @@ private fun Content(current: MutableState<Int>) {
 @Composable
 private fun SwitchPage(index: MutableState<Int>, modifier: Modifier) {
     if (index.value == Sidebar.MENU_FEAT_CONFIGURE) {
-        ConfigurationScreen(modifier)
+        val viewModel = remember { ConfigurationViewModel() }
+        ConfigurationScreen(modifier, viewModel)
     }
 }
 
