@@ -94,7 +94,7 @@ public class ServiceDiscovery {
 
     };
 
-    interface OnServiceDiscoveryListener {
+    public interface OnServiceDiscoveryListener {
 
         void onServiceDiscovered(Vector<String> list);
 

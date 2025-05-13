@@ -72,6 +72,7 @@ object ClassicBTManager {
         serviceDiscovery.setOnServiceDiscoveryListener { list ->
             connectionHandler(list)
         }
+        stopDiscovery()
         serviceDiscovery.startDiscoveryService(remoteDevice)
     }
 

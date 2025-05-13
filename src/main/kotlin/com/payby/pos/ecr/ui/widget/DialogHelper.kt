@@ -33,14 +33,14 @@ object DialogHelper {
     }
 
     @Composable
-    fun LoadingDialog(message: String = "Loading...", visible: Boolean) {
+    fun LoadingDialog(message: String = "LOADING...", visible: Boolean) {
         DialogWindow(title = "", onCloseRequest = { }, resizable = false, undecorated = true, visible = visible) {
             val color = Color(0x60000000)
             Box(modifier = Modifier.fillMaxSize().background(color), contentAlignment = Alignment.Center) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     CircularProgressIndicator(color = whiteColor)
                     val style = TextStyle(color = whiteColor, fontFamily = boldFontFamily, fontSize = 16.sp)
-                    Text(message, modifier = Modifier.padding(start = 10.dp), letterSpacing = 1.sp, style = style)
+                    Text(message, modifier = Modifier.padding(start = 10.dp), letterSpacing = 1.5.sp, style = style)
                 }
             }
         }

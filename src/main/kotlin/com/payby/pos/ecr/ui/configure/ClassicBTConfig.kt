@@ -60,7 +60,7 @@ private fun ItemView(device: BluetoothDevice) {
         isLoading.value = true
     }.padding(start = 16.dp, end = 16.dp)
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-        val textStyle = TextStyle(color = textSecondaryColor, fontFamily = mediumFontFamily, fontSize = 16.sp)
+        val textStyle = TextStyle(color = textSecondaryColor, fontFamily = mediumFontFamily, letterSpacing = 1.sp, fontSize = 16.sp)
         Text(text, style = textStyle)
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) { BluetoothStatus(device) }
     }
