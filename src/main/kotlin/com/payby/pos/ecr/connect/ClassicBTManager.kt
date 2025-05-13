@@ -4,6 +4,9 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.payby.pos.ecr.bluetooth.BluetoothDevice
 import com.payby.pos.ecr.bluetooth.DeviceDiscovery
 import com.payby.pos.ecr.bluetooth.ServiceDiscovery
+import com.payby.pos.ecr.ui.widget.DialogHelper
+import com.payby.pos.ecr.utils.IOHelper
+import com.payby.pos.ecr.utils.ThreadPoolManager
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
@@ -21,6 +24,8 @@ object ClassicBTManager {
     private var inputStream: InputStream ? = null
     private var outputStream: OutputStream ? = null
     private var streamConnection: StreamConnection ? = null
+
+    private var running = false
 
     fun startDiscovery(list: SnapshotStateList<BluetoothDevice>) {
         val deviceDiscoveryListener = object : DeviceDiscovery.OnDeviceDiscoveryListener {
@@ -42,29 +47,6 @@ object ClassicBTManager {
         deviceDiscovery.stopDiscoveryDevice()
     }
 
-    fun connect(device: BluetoothDevice) {
-        val remoteDevice = mapLock[device.address]
-        serviceDiscovery.setOnServiceDiscoveryListener { list ->
-            connectionHandler(list)
-        }
-        serviceDiscovery.startDiscoveryService(remoteDevice)
-    }
-
-    private fun connectionHandler(list: Vector<String>) {
-        stopDiscovery()
-        serviceDiscovery.stopDiscoveryService()
-        if (list.size == 0) return
-        try {
-            val url = list.elementAt(0)
-            streamConnection = (Connector.open(url) as StreamConnection).apply {
-                inputStream = openInputStream()
-                outputStream = openOutputStream()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     private fun addBluetoothDevice(remoteDevice: RemoteDevice, list: SnapshotStateList<BluetoothDevice>) {
         var name = ""
         val address = remoteDevice.bluetoothAddress
@@ -81,6 +63,112 @@ object ClassicBTManager {
         device.isPaired = remoteDevice.isAuthenticated
         list.add(device)
         mapLock[address] = remoteDevice
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    fun connect(device: BluetoothDevice) {
+        val remoteDevice = mapLock[device.address]
+        serviceDiscovery.setOnServiceDiscoveryListener { list ->
+            connectionHandler(list)
+        }
+        serviceDiscovery.startDiscoveryService(remoteDevice)
+    }
+
+    private fun stopDiscoveryService() {
+        serviceDiscovery.stopDiscoveryService()
+    }
+
+    val isConnected: Boolean
+        get() = streamConnection != null && inputStream != null && outputStream != null
+
+    fun send(bytes: ByteArray) {
+        val string = getString(bytes)
+        println("<--- Windows send: $string")
+        val outStream = outputStream
+        if (outStream == null) {
+            DialogHelper.showToast("Bluetooth connection is not established")
+            return
+        }
+        try {
+            outStream.write(bytes)
+            outStream.flush()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
+    fun disconnect() {
+        stopDiscoveryService()
+        stopDiscovery()
+        close()
+    }
+
+    private fun connectionHandler(list: Vector<String>) {
+        stopDiscovery()
+        stopDiscoveryService()
+        if (list.size == 0) return
+        try {
+            val url = list.elementAt(0)
+            streamConnection = (Connector.open(url) as StreamConnection).apply {
+                inputStream = openInputStream()
+                outputStream = openOutputStream()
+            }
+            ThreadPoolManager.executeCacheTask { readLooper() }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun readLooper() {
+        var len: Int
+        var string: String ?
+        var bytes: ByteArray
+        var buffer: ByteArray
+        running = true
+        while (running && streamConnection != null && inputStream != null) {
+            val inStream = inputStream ?: return
+            buffer = ByteArray(4 * 1024)
+            try {
+                len = inStream.read(buffer)
+                while (len != -1) {
+                    bytes = ByteArray(len)
+                    System.arraycopy(buffer, 0, bytes, 0, len)
+                    string = getString(bytes)
+                    println("---> Windows received: $string")
+                    len = inStream.read(buffer)
+                }
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun close() {
+        IOHelper.close(inputStream)
+        IOHelper.close(outputStream)
+        try {
+            val connection = streamConnection
+            if (connection != null) {
+                connection.close()
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        running = false
+        inputStream = null
+        outputStream = null
+        streamConnection = null
+    }
+
+    private fun getString(bytes: ByteArray): String ? {
+        try {
+            return String(bytes)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        return null
     }
 
 }
