@@ -1,5 +1,6 @@
 package com.payby.pos.ecr.ui.configure
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -16,26 +17,23 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.payby.pos.ecr.bluetooth.BluetoothDevice
+import com.payby.pos.ecr.connect.BluetoothDevice
 import com.payby.pos.ecr.connect.ClassicBTManager
 import com.payby.pos.ecr.ui.CommonUiUtil
+import com.payby.pos.ecr.ui.theme.boldFontFamily
 import com.payby.pos.ecr.ui.theme.mainThemeColor
 import com.payby.pos.ecr.ui.theme.mediumFontFamily
 import com.payby.pos.ecr.ui.theme.textSecondaryColor
-import com.payby.pos.ecr.utils.ThreadPoolManager
 import com.payby.pos.ecr.utils.isEmpty
 import com.payby.pos.ecr.utils.isValid
 
 @Composable
 fun ClassicBTConfig(modifier: Modifier) {
     val bluetoothDevices = remember { mutableStateListOf<BluetoothDevice>() }
-    for (i in 0..50) {
+    for (i in 0..8) {
         val bluetoothDevice = BluetoothDevice()
         bluetoothDevice.address = "00:11:22:33:44:55"
         bluetoothDevice.name = "Device $i"
-        if (i == 23) {
-            bluetoothDevice.isSelected = true
-        }
         bluetoothDevices.add(bluetoothDevice)
     }
     val bindItem: @Composable (BluetoothDevice, Int) -> Unit = { item, _ ->
@@ -59,7 +57,10 @@ private fun ItemView(device: BluetoothDevice) {
     } else {
         device.address
     }
-    val modifier = Modifier.height(60.dp).padding(start = 16.dp, end = 16.dp)
+    val modifier = Modifier.height(60.dp).clickable {
+        device.status.value = BluetoothDevice.STATUS_CONNECTING
+        ClassicBTManager.connect(device)
+    }.padding(start = 16.dp, end = 16.dp)
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         val textStyle = TextStyle(color = textSecondaryColor, fontFamily = mediumFontFamily, fontSize = 16.sp)
         Text(text, style = textStyle)
@@ -70,14 +71,19 @@ private fun ItemView(device: BluetoothDevice) {
 @Composable
 private fun BluetoothStatus(device: BluetoothDevice) {
     var status = ""
-    if (device.isSelected) {
-        status = "Connecting"
-    } else if (device.isPaired) {
+    val value = device.status.value
+    if (value == BluetoothDevice.STATUS_PAIRED) {
+        status = "Paired"
+    } else if (value == BluetoothDevice.STATUS_CONNECTED) {
         status = "Connected"
+    } else if (value == BluetoothDevice.STATUS_CONNECTING) {
+        status = "Connecting"
     }
     if (status.isEmpty) return
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(painter = painterResource("images/ic_select_right.png"), contentDescription = null, modifier = Modifier.size(24.dp), tint = mainThemeColor)
-        Text(status, modifier = Modifier.padding(start = 8.dp), color = textSecondaryColor, textAlign = TextAlign.Start, fontSize = 16.sp, fontFamily = mediumFontFamily)
+        if (value == BluetoothDevice.STATUS_CONNECTED) {
+            Icon(painter = painterResource("images/ic_select_right.png"), contentDescription = null, modifier = Modifier.padding(end = 8.dp).size(24.dp), tint = mainThemeColor)
+        }
+        Text(status, color = mainThemeColor, textAlign = TextAlign.Start, fontSize = 16.sp, fontFamily = boldFontFamily)
     }
 }

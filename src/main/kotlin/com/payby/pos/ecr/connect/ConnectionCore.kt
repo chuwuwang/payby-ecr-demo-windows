@@ -1,6 +1,5 @@
 package com.payby.pos.ecr.connect
 
-import com.payby.pos.ecr.bluetooth.BluetoothDevice
 import java.util.*
 
 object ConnectionCore {
