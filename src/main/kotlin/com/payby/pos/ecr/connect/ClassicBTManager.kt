@@ -4,8 +4,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.payby.pos.ecr.bluetooth.BluetoothDevice
 import com.payby.pos.ecr.bluetooth.DeviceDiscovery
 import com.payby.pos.ecr.bluetooth.ServiceDiscovery
-import com.payby.pos.ecr.ui.widget.DialogHelper
 import com.payby.pos.ecr.utils.IOHelper
+import com.payby.pos.ecr.utils.Logger
 import com.payby.pos.ecr.utils.ThreadPoolManager
 import java.io.InputStream
 import java.io.OutputStream
@@ -85,10 +85,11 @@ object ClassicBTManager {
 
     fun send(bytes: ByteArray) {
         val string = getString(bytes)
-        println("<--- Windows send: $string")
+        Logger.error("<--- Windows send: $string")
         val outStream = outputStream
         if (outStream == null) {
-            DialogHelper.showToast("Bluetooth connection is not established")
+            Logger.error("Bluetooth connection is not established")
+            ConnectionCore.onDisconnected("Bluetooth connection is not established")
             return
         }
         try {
@@ -108,16 +109,27 @@ object ClassicBTManager {
     private fun connectionHandler(list: Vector<String>) {
         stopDiscovery()
         stopDiscoveryService()
-        if (list.size == 0) return
+        if (list.size == 0) {
+            ConnectionCore.onDisconnected("Bluetooth connection failed, service not found")
+            return
+        }
         try {
             val url = list.elementAt(0)
             streamConnection = (Connector.open(url) as StreamConnection).apply {
                 inputStream = openInputStream()
                 outputStream = openOutputStream()
             }
-            ThreadPoolManager.executeCacheTask { readLooper() }
+            if (isConnected) {
+                Logger.error("ClassicBT connection successful")
+                ConnectionCore.onConnected()
+                ThreadPoolManager.executeCacheTask { readLooper() }
+            } else {
+                Logger.error("ClassicBT connected failed")
+                ConnectionCore.onDisconnected("Bluetooth connection failed")
+            }
         } catch (e: Throwable) {
             e.printStackTrace()
+            ConnectionCore.onDisconnected("Bluetooth connection error, " + e.message)
         }
     }
 
@@ -126,22 +138,24 @@ object ClassicBTManager {
         var string: String ?
         var bytes: ByteArray
         var buffer: ByteArray
-        running = true
-        while (running && streamConnection != null && inputStream != null) {
-            val inStream = inputStream ?: return
-            buffer = ByteArray(4 * 1024)
-            try {
+        try {
+            running = true
+            while (running && streamConnection != null && inputStream != null) {
+                val inStream = inputStream ?: return
+                buffer = ByteArray(4 * 1024)
                 len = inStream.read(buffer)
                 while (len != -1) {
                     bytes = ByteArray(len)
                     System.arraycopy(buffer, 0, bytes, 0, len)
                     string = getString(bytes)
-                    println("---> Windows received: $string")
+                    Logger.error("---> Windows received: $string")
+                    ConnectionCore.onReceived(bytes)
                     len = inStream.read(buffer)
                 }
-            } catch (e: Throwable) {
-                e.printStackTrace()
             }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            close()
         }
     }
 
@@ -160,6 +174,7 @@ object ClassicBTManager {
         inputStream = null
         outputStream = null
         streamConnection = null
+        ConnectionCore.onDisconnected("Bluetooth disconnection")
     }
 
     private fun getString(bytes: ByteArray): String ? {
