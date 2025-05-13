@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -22,6 +24,7 @@ import com.payby.pos.ecr.ui.theme.boldFontFamily
 import com.payby.pos.ecr.ui.theme.mainThemeColor
 import com.payby.pos.ecr.ui.theme.mediumFontFamily
 import com.payby.pos.ecr.ui.theme.textSecondaryColor
+import com.payby.pos.ecr.ui.widget.DialogHelper.LoadingDialog
 import com.payby.pos.ecr.utils.ThreadPoolManager
 import com.payby.pos.ecr.utils.isEmpty
 import com.payby.pos.ecr.utils.isValid
@@ -45,6 +48,7 @@ fun ClassicBTConfig(modifier: Modifier, viewModel: ConfigurationViewModel) {
 
 @Composable
 private fun ItemView(device: BluetoothDevice) {
+    val isLoading = remember { mutableStateOf(false) }
     val text = if (device.name != null && device.name.isValid) {
         device.name + " - " + device.address
     } else {
@@ -53,12 +57,14 @@ private fun ItemView(device: BluetoothDevice) {
     val modifier = Modifier.height(60.dp).clickable {
         device.status.value = BluetoothDevice.STATUS_CONNECTING
         ClassicBTManager.connect(device)
+        isLoading.value = true
     }.padding(start = 16.dp, end = 16.dp)
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         val textStyle = TextStyle(color = textSecondaryColor, fontFamily = mediumFontFamily, fontSize = 16.sp)
         Text(text, style = textStyle)
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) { BluetoothStatus(device) }
     }
+    LoadingDialog("CONNECTING...", isLoading.value)
 }
 
 @Composable

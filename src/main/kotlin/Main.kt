@@ -44,9 +44,9 @@ private fun Content(current: MutableState<Int>) {
 
 @Composable
 private fun SwitchPage(index: MutableState<Int>, modifier: Modifier) {
+    val configurationViewModel = remember { ConfigurationViewModel() }
     if (index.value == Sidebar.MENU_FEAT_CONFIGURE) {
-        val viewModel = remember { ConfigurationViewModel() }
-        ConfigurationScreen(modifier, viewModel)
+        ConfigurationScreen(modifier, configurationViewModel)
     }
 }
 
