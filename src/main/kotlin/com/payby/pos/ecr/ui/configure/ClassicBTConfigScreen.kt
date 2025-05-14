@@ -23,11 +23,11 @@ import com.payby.pos.ecr.connect.BluetoothDevice
 import com.payby.pos.ecr.connect.ClassicBTManager
 import com.payby.pos.ecr.connect.ConnectionCore
 import com.payby.pos.ecr.connect.ConnectionListener
-import com.payby.pos.ecr.ui.CommonUiUtil
 import com.payby.pos.ecr.ui.theme.boldFontFamily
 import com.payby.pos.ecr.ui.theme.mainThemeColor
 import com.payby.pos.ecr.ui.theme.mediumFontFamily
 import com.payby.pos.ecr.ui.theme.textSecondaryColor
+import com.payby.pos.ecr.ui.widget.CommonUiUtil
 import com.payby.pos.ecr.ui.widget.DialogHelper.LoadingDialog
 import com.payby.pos.ecr.utils.ThreadPoolManager
 import com.payby.pos.ecr.utils.isEmpty

@@ -1,4 +1,4 @@
-package com.payby.pos.ecr.ui
+package com.payby.pos.ecr.ui.widget
 
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
