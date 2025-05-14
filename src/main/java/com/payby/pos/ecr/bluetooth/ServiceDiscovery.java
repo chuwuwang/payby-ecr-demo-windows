@@ -36,6 +36,9 @@ public class ServiceDiscovery {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            if (listener != null) {
+                listener.onServiceDiscovered(servicesList);
+            }
         }
     }
 

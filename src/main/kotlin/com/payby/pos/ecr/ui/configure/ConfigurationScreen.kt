@@ -21,7 +21,7 @@ fun ConfigurationScreen(modifier: Modifier, viewModel: ConfigurationViewModel) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Sidebar()
         modifier = Modifier.weight(3.0f).padding(16.dp).clip(radius_8).background(whiteColor)
-        ClassicBTConfig(modifier, viewModel)
+        ClassicBTConfigScreen(modifier, viewModel)
     }
 }
 
