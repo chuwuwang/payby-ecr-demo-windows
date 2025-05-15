@@ -71,7 +71,7 @@ fun ClassicBTConfigScreen(modifier: Modifier, viewModel: ConfigurationViewModel)
     val bindItem: @Composable (BluetoothDevice, Int) -> Unit = { item, _ ->
         Column {
             ItemView(item, isLoading, toaster)
-            CommonUiUtil.horizontalDivider()
+            CommonUiUtil.HorizontalDivider()
         }
     }
     val state = rememberLazyListState()
