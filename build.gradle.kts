@@ -29,6 +29,7 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.google.protobuf:protobuf-java:3.25.3")
+    implementation("com.google.protobuf:protobuf-java-util:4.27.3")
 
     implementation("commons-io:commons-io:2.18.0")
 

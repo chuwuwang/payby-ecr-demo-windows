@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.rememberToasterState
+import com.payby.pos.ecr.api.Processor
 import com.payby.pos.ecr.connect.ConnectionCore
 import com.payby.pos.ecr.connect.ConnectionListener
 import com.payby.pos.ecr.ui.theme.SuccessTextFieldColors
@@ -49,7 +50,8 @@ fun OtherApiScreen(modifier: Modifier, viewModel: OtherApiViewModel) {
             }
 
             override fun onMessage(bytes: ByteArray) {
-
+                val string = Processor.parserResponse(bytes)
+                outputText.value = string
             }
 
         }
