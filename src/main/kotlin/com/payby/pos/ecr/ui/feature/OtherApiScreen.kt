@@ -1,22 +1,24 @@
-package com.payby.pos.ecr.ui.api
+package com.payby.pos.ecr.ui.feature
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dokar.sonner.Toaster
+import com.dokar.sonner.rememberToasterState
+import com.payby.pos.ecr.connect.ConnectionCore
+import com.payby.pos.ecr.connect.ConnectionListener
 import com.payby.pos.ecr.ui.theme.SuccessTextFieldColors
 import com.payby.pos.ecr.ui.theme.mediumFontFamily
 import com.payby.pos.ecr.ui.theme.textMainColor
 import com.payby.pos.ecr.ui.theme.textSecondaryColor
 import com.payby.pos.ecr.ui.widget.CommonUiUtil
+import com.payby.pos.ecr.ui.widget.DialogHelper.LoadingDialog
 import com.payby.pos.ecr.ui.widget.TextButton
 
 private const val API_PING = "api_ping"
@@ -25,7 +27,9 @@ private const val API_QUERY_ACQUIRE_ORDER = "api_query_acquire_order"
 private const val API_QUERY_REFUND_ORDER = "api_query_refund_order"
 
 @Composable
-fun OtherApiScreen(modifier: Modifier) {
+fun OtherApiScreen(modifier: Modifier, viewModel: OtherApiViewModel) {
+    val toaster = rememberToasterState()
+    val isLoading = remember { mutableStateOf(false) }
     val selector = remember { mutableStateOf("") }
     val outputText = remember { mutableStateOf("") }
     val inputRefundOrder = remember { mutableStateOf("") }
@@ -33,12 +37,49 @@ fun OtherApiScreen(modifier: Modifier) {
     val onOutputValueChange: (String) -> Unit = {
         outputText.value = it
     }
+
+    DisposableEffect(Unit) {
+        val listener = object : ConnectionListener {
+
+            override fun onConnected() {}
+
+            override fun onDisconnected(message: String) {
+                isLoading.value = false
+                toaster.show(message)
+            }
+
+            override fun onMessage(bytes: ByteArray) {
+
+            }
+
+        }
+        ConnectionCore.addListener(listener)
+        onDispose { ConnectionCore.removeListener(listener) }
+    }
+
     Column(modifier) {
         FeatureList(selector, inputAcquireOrder, inputRefundOrder)
-        TextButton(modifier = Modifier.padding(vertical = 24.dp), text = "Request") {}
-        val modifierScroll = Modifier.fillMaxSize().padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 24.dp)
+        TextButton(modifier = Modifier.padding(vertical = 24.dp), text = "Request") {
+            if (ConnectionCore.isConnected) {
+                isLoading.value = true
+                if (selector.value == API_PING) {
+                    viewModel.doPing()
+                } else if (selector.value == API_GET_DEVICE_INFO) {
+
+                } else if (selector.value == API_QUERY_ACQUIRE_ORDER) {
+
+                } else if (selector.value == API_QUERY_REFUND_ORDER) {
+
+                }
+            } else {
+                toaster.show("Please connect to the device first")
+            }
+        }
+        val modifierScroll = Modifier.fillMaxSize().padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
         CommonUiUtil.InputTextField(modifierScroll, outputText.value, onOutputValueChange)
     }
+    Toaster(state = toaster)
+    LoadingDialog(visible = isLoading.value)
 }
 
 private fun placeholderText(): @Composable () -> Unit = {

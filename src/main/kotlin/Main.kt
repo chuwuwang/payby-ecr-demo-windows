@@ -17,9 +17,9 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import com.payby.pos.ecr.ui.api.*
 import com.payby.pos.ecr.ui.configure.ConfigurationScreen
 import com.payby.pos.ecr.ui.configure.ConfigurationViewModel
+import com.payby.pos.ecr.ui.feature.*
 import com.payby.pos.ecr.ui.main.Sidebar
 import com.payby.pos.ecr.ui.theme.whiteColor
 
@@ -45,6 +45,7 @@ private fun Content(current: MutableState<Int>) {
 
 @Composable
 private fun SwitchPage(index: MutableState<Int>, modifier: Modifier) {
+    val otherApiViewModel = remember { OtherApiViewModel() }
     val configurationViewModel = remember { ConfigurationViewModel() }
     if (index.value == Sidebar.MENU_FEAT_PURCHASE) {
         PurchaseScreen(modifier)
@@ -55,7 +56,7 @@ private fun SwitchPage(index: MutableState<Int>, modifier: Modifier) {
     } else if (index.value == Sidebar.MENU_FEAT_SETTLEMENT) {
         SettlementScreen(modifier)
     } else if (index.value == Sidebar.MENU_FEAT_OTHER) {
-        OtherApiScreen(modifier)
+        OtherApiScreen(modifier, otherApiViewModel)
     } else if (index.value == Sidebar.MENU_FEAT_CONFIGURE) {
         ConfigurationScreen(modifier, configurationViewModel)
     }
