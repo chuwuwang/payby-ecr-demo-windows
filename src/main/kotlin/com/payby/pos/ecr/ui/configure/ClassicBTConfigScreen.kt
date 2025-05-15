@@ -82,7 +82,7 @@ fun ClassicBTConfigScreen(modifier: Modifier, viewModel: ConfigurationViewModel)
     Toaster(state = toaster)
     LoadingDialog("CONNECTING...", isLoading.value)
 
-    if (viewModel.bluetoothDevices.size == 0) return
+    if (viewModel.bluetoothDevices.size > 0) return
     ThreadPoolManager.executeCacheTask { ClassicBTManager.startDiscovery(viewModel.bluetoothDevices) }
 }
 
@@ -108,7 +108,7 @@ private fun ItemView(device: BluetoothDevice, isLoading: MutableState<Boolean>, 
             device.status.value = BluetoothDevice.STATUS_CONNECTING
             connectingDevice = device
             isLoading.value = true
-            ThreadPoolManager.executeCacheTask { ClassicBTManager.connect(device) }
+            ThreadPoolManager.executeCacheTask { ConnectionCore.connectWithClassicBT(device) }
         }
     }.padding(start = 16.dp, end = 16.dp)
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
