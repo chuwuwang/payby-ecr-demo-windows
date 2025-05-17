@@ -50,6 +50,7 @@ fun OtherApiScreen(modifier: Modifier, viewModel: OtherApiViewModel) {
             }
 
             override fun onMessage(bytes: ByteArray) {
+                isLoading.value = false
                 val string = Processor.parserResponse(bytes)
                 outputText.value = string
             }
@@ -65,7 +66,7 @@ fun OtherApiScreen(modifier: Modifier, viewModel: OtherApiViewModel) {
             if (ConnectionCore.isConnected) {
                 isLoading.value = true
                 if (selector.value == API_PING) {
-                    viewModel.doPing()
+                    viewModel.ping()
                 } else if (selector.value == API_GET_DEVICE_INFO) {
 
                 } else if (selector.value == API_QUERY_ACQUIRE_ORDER) {

@@ -2,6 +2,7 @@ package com.payby.pos.ecr.api
 
 import com.google.protobuf.Timestamp
 import com.google.protobuf.util.JsonFormat
+import com.payby.pos.ecr.utils.Logger
 import com.uaepay.pos.ecr.Ecr
 import com.uaepay.pos.ecr.acquire.Acquire.AcquireOrder
 import com.uaepay.pos.ecr.acquire.Acquire.AcquireOrderPage
@@ -34,22 +35,37 @@ object Processor {
         return Timestamp.newBuilder().setSeconds(System.currentTimeMillis() / 1000).build()
     }
 
+    fun printRequest(envelope: Ecr.EcrEnvelope) {
+        try {
+            val messageId = envelope.request.messageId
+            val serviceName = envelope.request.serviceName
+            val timestamp = envelope.request.timestamp.seconds
+            val body = envelope.request.body
+            val msg = "Request ---> (serviceName: $serviceName, messageId: $messageId, timestamp: $timestamp) $body"
+            Logger.error(msg)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
     fun parserResponse(byteArray: ByteArray): String {
         try {
             val sb = StringBuilder()
             val envelope = Ecr.EcrEnvelope.parseFrom(byteArray)
             val contentCase = envelope.contentCase
-            if (contentCase == Ecr.EcrEnvelope.ContentCase.PING) {
-                val ping = envelope.ping
-                sb.append(ping)
-            } else if (contentCase == Ecr.EcrEnvelope.ContentCase.PONG) {
+            if (contentCase == Ecr.EcrEnvelope.ContentCase.PONG) {
                 val pong = envelope.pong
-                sb.append(pong)
+                val messageId = pong.messageId
+                val timestamp = pong.timestamp.seconds
+                sb.append("RESPONSE PONG").append("\n")
+                sb.append("messageId: $messageId\n")
+                sb.append("timestamp: $timestamp\n")
             } else if (contentCase == Ecr.EcrEnvelope.ContentCase.RESPONSE) {
                 val response = envelope.response
                 val responseString = parserResponse(response)
                 sb.append(responseString)
             }
+            return sb.toString()
         } catch (e: Throwable) {
             e.printStackTrace()
         }

@@ -52,7 +52,7 @@ object ClassicBTManager {
         try {
             name = remoteDevice.getFriendlyName(true) ?: ""
         } catch (e: Exception) {
-            e.printStackTrace()
+            // ignore exception
         }
         val bool = mapLock.containsKey(address)
         if (bool) return
@@ -85,7 +85,7 @@ object ClassicBTManager {
 
     fun send(bytes: ByteArray) {
         val string = getString(bytes)
-        Logger.error("<--- Windows send: $string")
+        Logger.error("---> ClassicBT send: $string")
         val outStream = outputStream
         if (outStream == null) {
             Logger.error("Bluetooth connection is not established")
@@ -148,7 +148,7 @@ object ClassicBTManager {
                     bytes = ByteArray(len)
                     System.arraycopy(buffer, 0, bytes, 0, len)
                     string = getString(bytes)
-                    Logger.error("---> Windows received: $string")
+                    Logger.error("---> ClassicBT received: $string")
                     ConnectionCore.onReceived(bytes)
                     len = inStream.read(buffer)
                 }
