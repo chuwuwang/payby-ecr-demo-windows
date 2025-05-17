@@ -68,7 +68,7 @@ fun OtherApiScreen(modifier: Modifier, viewModel: OtherApiViewModel) {
                 if (selector.value == API_PING) {
                     viewModel.ping()
                 } else if (selector.value == API_GET_DEVICE_INFO) {
-
+                    viewModel.getDeviceInfo()
                 } else if (selector.value == API_QUERY_ACQUIRE_ORDER) {
 
                 } else if (selector.value == API_QUERY_REFUND_ORDER) {

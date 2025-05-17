@@ -37,12 +37,21 @@ object Processor {
 
     fun printRequest(envelope: Ecr.EcrEnvelope) {
         try {
-            val messageId = envelope.request.messageId
-            val serviceName = envelope.request.serviceName
-            val timestamp = envelope.request.timestamp.seconds
-            val body = envelope.request.body
-            val msg = "Request ---> (serviceName: $serviceName, messageId: $messageId, timestamp: $timestamp) $body"
-            Logger.error(msg)
+            var message = ""
+            val contentCase = envelope.contentCase
+            if (contentCase == Ecr.EcrEnvelope.ContentCase.PING) {
+                val ping = envelope.ping
+                val messageId = ping.messageId
+                val timestamp = ping.timestamp.seconds
+                message = "PING ---> (messageId: $messageId, timestamp: $timestamp)"
+            } else if (contentCase == Ecr.EcrEnvelope.ContentCase.REQUEST) {
+                val messageId = envelope.request.messageId
+                val serviceName = envelope.request.serviceName
+                val timestamp = envelope.request.timestamp.seconds
+                val body = envelope.request.body
+                message = "REQUEST ---> (serviceName: $serviceName, messageId: $messageId, timestamp: $timestamp) $body"
+            }
+            Logger.error(message)
         } catch (e: Throwable) {
             e.printStackTrace()
         }
