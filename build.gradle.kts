@@ -50,9 +50,13 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "payby-ecr-demo-windows"
             packageVersion = "1.1.1"
+        }
+        buildTypes.release.proguard {
+            version.set("7.5.0")
+            configurationFiles.from("proguard-rules.pro")
         }
     }
 }
