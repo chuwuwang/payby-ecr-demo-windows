@@ -47,10 +47,11 @@ private fun Content(current: MutableState<Int>) {
 private fun SwitchPage(index: MutableState<Int>, modifier: Modifier) {
     val otherApiViewModel = remember { OtherApiViewModel() }
     val configurationViewModel = remember { ConfigurationViewModel() }
+    val avoidViewModel = remember { AvoidApiViewModel() }
     if (index.value == Sidebar.MENU_FEAT_PURCHASE) {
         PurchaseScreen(modifier)
     } else if (index.value == Sidebar.MENU_FEAT_VOID) {
-        AvoidScreen(modifier)
+        AvoidScreen(modifier, avoidViewModel)
     } else if (index.value == Sidebar.MENU_FEAT_REFUND) {
         RefundScreen(modifier)
     } else if (index.value == Sidebar.MENU_FEAT_SETTLEMENT) {
