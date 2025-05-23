@@ -9,7 +9,7 @@ import com.uaepay.pos.ecr.acquire.Acquire
 import com.uaepay.pos.ecr.acquire.Void
 
 class AvoidApiViewModel {
-    fun doAvoid(orderNo: String, merchantOrderNo:String? ="", nType: Int = 0) {
+    fun doAvoid(orderNo: String, originalMerchantOrderNo: String? = "", merchantOrderNo:String? ="", nType: Int = 0) {
         val timestamp = Processor.getTimestamp()
         val listReceipt = ArrayList<Acquire.Receipt>()
         when (nType) {
@@ -24,7 +24,12 @@ class AvoidApiViewModel {
                 listReceipt.add(Acquire.Receipt.MERCHANT_RECEIPT)
             }
         }
-        val voidRequest = Void.VoidRequest.newBuilder().setAcquireOrderNo(orderNo).setVoidMerchantOrderNo(merchantOrderNo).addAllPrintReceipts(listReceipt).build()
+        val voidRequest = Void.VoidRequest.newBuilder()
+            .setAcquireOrderNo(orderNo)
+            .setAcquireMerchantOrderNo(originalMerchantOrderNo)
+            .setVoidMerchantOrderNo(merchantOrderNo)
+            .addAllPrintReceipts(listReceipt)
+            .build()
         val body = Any.pack(voidRequest)
         val request = Ecr.Request.newBuilder().setMessageId(2).setTimestamp(timestamp).setServiceName(Processor.VOID_PLACE_ORDER).setBody(body).build()
         val envelope = Ecr.EcrEnvelope.newBuilder().setVersion(Processor.VERSION).setRequest(request).build()

@@ -3,6 +3,7 @@ package com.payby.pos.ecr.ui.feature
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Checkbox
 import androidx.compose.material.OutlinedTextField
@@ -20,9 +21,11 @@ import com.dokar.sonner.rememberToasterState
 import com.payby.pos.ecr.api.Processor
 import com.payby.pos.ecr.connect.ConnectionCore
 import com.payby.pos.ecr.connect.ConnectionListener
+import com.payby.pos.ecr.ui.theme.SuccessTextFieldColors
 import com.payby.pos.ecr.ui.theme.mediumFontFamily
 import com.payby.pos.ecr.ui.theme.textMainColor
 import com.payby.pos.ecr.ui.theme.textSecondaryColor
+import com.payby.pos.ecr.ui.widget.CommonUiUtil
 import com.payby.pos.ecr.ui.widget.TextButton
 import com.payby.pos.ecr.utils.isEmpty
 
@@ -30,6 +33,7 @@ import com.payby.pos.ecr.utils.isEmpty
 fun AvoidScreen(modifier: Modifier, avoidApiViewModel: AvoidApiViewModel) {
 
     val inputAvoidOrderNo = remember { mutableStateOf("") }
+    val inputAvoidMerchantOrderNoOriginal = remember { mutableStateOf("") }
     val inputAvoidMerchantOrderNo = remember { mutableStateOf("") }
     val isMerchantReceipt = remember { mutableStateOf(false) }
     val isCustomerReceipt = remember { mutableStateOf(false) }
@@ -55,7 +59,7 @@ fun AvoidScreen(modifier: Modifier, avoidApiViewModel: AvoidApiViewModel) {
 
         }
         ConnectionCore.addListener(listener = listener)
-        onDispose {listener}
+        onDispose { ConnectionCore.removeListener(listener = listener) }
     }
 
 
@@ -66,8 +70,19 @@ fun AvoidScreen(modifier: Modifier, avoidApiViewModel: AvoidApiViewModel) {
                 inputAvoidOrderNo.value = it},
             modifier = Modifier.padding(start = 32.dp),
             placeholder = {
-                Text(text = "Input orderNo", fontSize = 16.sp, fontFamily = mediumFontFamily, color = textSecondaryColor)
-            }
+                Text(text = "Input original order no", fontSize = 16.sp, fontFamily = mediumFontFamily, color = textSecondaryColor)
+            },
+            colors = SuccessTextFieldColors
+        )
+        OutlinedTextField(
+            value = inputAvoidMerchantOrderNoOriginal.value,
+            onValueChange = {
+                inputAvoidMerchantOrderNoOriginal.value = it},
+            modifier = Modifier.padding(start = 32.dp, top = 16.dp),
+            placeholder = {
+                Text(text = "Input original merchant order no", fontSize = 16.sp, fontFamily = mediumFontFamily, color = textSecondaryColor)
+            },
+            colors = SuccessTextFieldColors
         )
         OutlinedTextField(
             value = inputAvoidMerchantOrderNo.value,
@@ -76,7 +91,8 @@ fun AvoidScreen(modifier: Modifier, avoidApiViewModel: AvoidApiViewModel) {
             modifier = Modifier.padding(start = 32.dp, top = 16.dp),
             placeholder = {
                 Text(text = "Input merchantOrderNo(Optional)", fontSize = 16.sp, fontFamily = mediumFontFamily, color = textSecondaryColor)
-            }
+            },
+            colors = SuccessTextFieldColors
         )
         Text(text = "Receipt (Optional)", modifier = Modifier.padding(start = 32.dp, top = 16.dp), fontSize = 16.sp, fontFamily = mediumFontFamily, color = textMainColor)
 
@@ -121,7 +137,7 @@ fun AvoidScreen(modifier: Modifier, avoidApiViewModel: AvoidApiViewModel) {
                 0
             }
 
-            avoidApiViewModel.doAvoid(inputAvoidOrderNo.value, inputAvoidMerchantOrderNo.value, nType)
+            avoidApiViewModel.doAvoid(inputAvoidOrderNo.value, inputAvoidMerchantOrderNoOriginal.value, inputAvoidMerchantOrderNo.value, nType)
             
         }
 
