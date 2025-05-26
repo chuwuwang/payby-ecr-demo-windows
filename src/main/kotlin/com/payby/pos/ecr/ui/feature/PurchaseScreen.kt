@@ -252,7 +252,7 @@ fun PurchaseScreen(modifier: Modifier, purchaseViewModel: PurchaseViewModel) {
             TextButton(modifier = Modifier.padding(start = 24.dp, top = 16.dp),
                 text =  "Request",
                 onClick = {
-                    if (!ConnectionCore.isConnected) {
+                    if (ConnectionCore.isConnected) {
                         val paymentType =
                             (if (paymentTypeState[0]) 1 else 0) or
                                     (if (paymentTypeState[1]) 2 else 0) or
