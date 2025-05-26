@@ -13,6 +13,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,7 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.rememberToasterState
+import com.payby.pos.ecr.api.Processor
 import com.payby.pos.ecr.connect.ConnectionCore
+import com.payby.pos.ecr.connect.ConnectionListener
 import com.payby.pos.ecr.ui.feature.bean.SaleRequest
 import com.payby.pos.ecr.ui.theme.SuccessTextFieldColors
 import com.payby.pos.ecr.ui.theme.mediumFontFamily
@@ -47,6 +50,29 @@ fun PurchaseScreen(modifier: Modifier, purchaseViewModel: PurchaseViewModel) {
     }
     val paymentTypeState = remember { mutableStateListOf(false, false, false) }
     val receiptTypeState = remember { mutableStateListOf(false, false)}
+    val isLoading = remember { mutableStateOf(false) }
+
+    DisposableEffect(Unit) {
+        val listener = object : ConnectionListener {
+            override fun onConnected() {
+
+            }
+
+            override fun onDisconnected(message: String) {
+                isLoading.value = false
+                toaster.show(message)
+            }
+
+            override fun onMessage(bytes: ByteArray) {
+                isLoading.value = false
+                val string = Processor.parserResponse(bytes)
+                outputText.value = string
+            }
+
+        }
+        ConnectionCore.addListener(listener = listener)
+        onDispose { ConnectionCore.removeListener(listener = listener) }
+    }
 
     Column(modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         Row(
