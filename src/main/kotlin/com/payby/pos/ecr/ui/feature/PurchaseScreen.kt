@@ -1,5 +1,6 @@
 package com.payby.pos.ecr.ui.feature
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,14 +12,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Checkbox
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dokar.sonner.Toaster
@@ -32,7 +34,9 @@ import com.payby.pos.ecr.ui.theme.mediumFontFamily
 import com.payby.pos.ecr.ui.theme.textMainColor
 import com.payby.pos.ecr.ui.theme.textSecondaryColor
 import com.payby.pos.ecr.ui.widget.CommonUiUtil
+import com.payby.pos.ecr.ui.widget.DialogHelper.LoadingDialog
 import com.payby.pos.ecr.ui.widget.TextButton
+import com.payby.pos.ecr.utils.Logger
 
 @Composable
 fun PurchaseScreen(modifier: Modifier, purchaseViewModel: PurchaseViewModel) {
@@ -40,7 +44,7 @@ fun PurchaseScreen(modifier: Modifier, purchaseViewModel: PurchaseViewModel) {
     val inputAmount = remember { mutableStateOf("") }
     val inputMerchantNo = remember { mutableStateOf("") }
     val inputSubject = remember { mutableStateOf("") }
-    val selectorNotification = remember { mutableStateOf("") }
+    val selectorNotification = remember { mutableStateOf("ASYNC") }
     val selectorResultNotification = remember { mutableStateOf("") }
 
     val isDisplayResult = remember { mutableStateOf(false) }
@@ -269,8 +273,8 @@ fun PurchaseScreen(modifier: Modifier, purchaseViewModel: PurchaseViewModel) {
                             else -> 0
                         }
 
-                        val nReceiptType =  (if (paymentTypeState[0]) 1 else 0) or
-                                (if (paymentTypeState[1]) 2 else 0)
+                        val nReceiptType =  (if (receiptTypeState[0]) 1 else 0) or
+                                (if (receiptTypeState[1]) 2 else 0)
 
                         val amountStr = inputAmount.value
                         if (amountStr.isNotEmpty() && amountStr.toLong()> 0) {
@@ -294,17 +298,19 @@ fun PurchaseScreen(modifier: Modifier, purchaseViewModel: PurchaseViewModel) {
                 })
 
             TextButton(modifier = Modifier.padding(start = 24.dp, top = 16.dp),
-                text =  "Cancel",
+                text =  "Cancel Payment",
                 onClick = {
-
+                    purchaseViewModel.closeCashier()
                 })
         }
 
-        val modifierScroll = Modifier.fillMaxSize().padding(start = 24.dp, end = 24.dp, bottom = 24.dp, top = 16.dp)
-        CommonUiUtil.InputTextField(modifierScroll, outputText.value, onOutputValueChange)
+        CommonUiUtil.InputTextField(Modifier.fillMaxSize().padding(start = 24.dp, end = 24.dp, bottom = 24.dp, top = 16.dp), outputText.value, onOutputValueChange)
 
 
         Toaster(state = toaster)
+        LoadingDialog(visible = isLoading.value, onCloseRequest = {
+            isLoading.value = false
+        })
 
     }
 

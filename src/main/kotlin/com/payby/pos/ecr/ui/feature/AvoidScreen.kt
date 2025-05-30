@@ -3,6 +3,7 @@ package com.payby.pos.ecr.ui.feature
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Checkbox
@@ -39,7 +40,10 @@ fun AvoidScreen(modifier: Modifier, avoidApiViewModel: AvoidApiViewModel) {
     val isCustomerReceipt = remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
     val toaster = rememberToasterState {  }
-
+    val outputText = remember { mutableStateOf("") }
+    val onOutputValueChange: (String) -> Unit = {
+        outputText.value = it
+    }
     DisposableEffect(key1 = Unit) {
         val listener = object : ConnectionListener {
             override fun onConnected() {
@@ -54,7 +58,7 @@ fun AvoidScreen(modifier: Modifier, avoidApiViewModel: AvoidApiViewModel) {
             override fun onMessage(bytes: ByteArray) {
                 isLoading.value = false
                 val string = Processor.parserResponse(bytes)
-
+                outputText.value = string
             }
 
         }
@@ -140,6 +144,8 @@ fun AvoidScreen(modifier: Modifier, avoidApiViewModel: AvoidApiViewModel) {
             avoidApiViewModel.doAvoid(inputAvoidOrderNo.value, inputAvoidMerchantOrderNoOriginal.value, inputAvoidMerchantOrderNo.value, nType)
             
         }
+
+        CommonUiUtil.InputTextField(Modifier.fillMaxSize().padding(start = 24.dp, end = 24.dp, bottom = 24.dp, top = 16.dp), outputText.value, onOutputValueChange)
 
         Toaster(state = toaster)
     }

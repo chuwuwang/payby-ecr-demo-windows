@@ -26,7 +26,7 @@ import com.payby.pos.ecr.ui.theme.whiteColor
 @Composable
 @Preview
 fun app() {
-    val current = remember { mutableStateOf(0) }
+    val current = remember { mutableStateOf(21) }
     MaterialTheme { Content(current) }
 }
 
@@ -49,14 +49,16 @@ private fun SwitchPage(index: MutableState<Int>, modifier: Modifier) {
     val configurationViewModel = remember { ConfigurationViewModel() }
     val avoidViewModel = remember { AvoidApiViewModel() }
     val purchaseViewModel = remember { PurchaseViewModel() }
+    val refundViewModel = remember { RefundViewModel() }
+    val settlementViewModel = remember { SettlementViewModel() }
     if (index.value == Sidebar.MENU_FEAT_PURCHASE) {
         PurchaseScreen(modifier, purchaseViewModel)
     } else if (index.value == Sidebar.MENU_FEAT_VOID) {
         AvoidScreen(modifier, avoidViewModel)
     } else if (index.value == Sidebar.MENU_FEAT_REFUND) {
-        RefundScreen(modifier)
+        RefundScreen(modifier, refundViewModel)
     } else if (index.value == Sidebar.MENU_FEAT_SETTLEMENT) {
-        SettlementScreen(modifier)
+        SettlementScreen(modifier, settlementViewModel)
     } else if (index.value == Sidebar.MENU_FEAT_OTHER) {
         OtherApiScreen(modifier, otherApiViewModel)
     } else if (index.value == Sidebar.MENU_FEAT_CONFIGURE) {

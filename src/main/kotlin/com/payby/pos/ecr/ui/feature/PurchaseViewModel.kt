@@ -36,33 +36,26 @@ class PurchaseViewModel {
         val listPayment = ArrayList<Acquire.PaymentMethod>()
         when (request.paymentMethod) {
             0 -> {
-                Logger.error("<UNK>0")
                 listPayment.add(Acquire.PaymentMethod.UNRECOGNIZED)
             }
             1-> {
-                Logger.error("<UNK>1")
                 listPayment.add(Acquire.PaymentMethod.BANKCARD)
             }
             2-> {
-                Logger.error("<UNK>2")
                 listPayment.add(Acquire.PaymentMethod.CUSTOMER_PRESENT_CODE)
             }
             3->{
-                Logger.error("<UNK>3")
                 listPayment.add(Acquire.PaymentMethod.CUSTOMER_PRESENT_CODE)
                 listPayment.add(Acquire.PaymentMethod.BANKCARD)
             }
             4->{
-                Logger.error("<UNK>4")
                 listPayment.add(Acquire.PaymentMethod.POS_PRESENT_CODE)
             }
             5->{
-                Logger.error("<UNK>5")
                 listPayment.add(Acquire.PaymentMethod.POS_PRESENT_CODE)
                 listPayment.add(Acquire.PaymentMethod.BANKCARD)
             }
             6->{
-                Logger.error("<UNK>6")
                 listPayment.add(Acquire.PaymentMethod.POS_PRESENT_CODE)
                 listPayment.add(Acquire.PaymentMethod.CUSTOMER_PRESENT_CODE)
             }
@@ -85,7 +78,7 @@ class PurchaseViewModel {
             }
 
             else -> {
-                Acquire.InvokeType.UNRECOGNIZED
+                Acquire.InvokeType.SYNCHRONIZATION
             }
         }
         val notification = when(request.nNotificationType) {
@@ -102,14 +95,14 @@ class PurchaseViewModel {
 
         val invokeTypeParams = Acquire.InvokeParams.newBuilder()
             .setInvokeType(invokeType)
-            .setNotification(notification).build()
-
+            .build()
 
         val purchaseRequest = Acquire.PlaceOrderRequest.newBuilder()
             .setAmount(money)
             .setSubject(request.subject)
             .setMerchantOrderNo(request.merchantOrderNo)
             .setInvokeParams(invokeTypeParams)
+            .setCashierParams(cashierParams)
             .build()
 
 
@@ -120,5 +113,14 @@ class PurchaseViewModel {
         val byteArray = envelope.toByteArray()
         ThreadPoolManager.executeCacheTask { ConnectionCore.send(byteArray) }
 
+    }
+
+    fun  closeCashier() {
+        val timestamp = Processor.getTimestamp()
+        val request = Ecr.Request.newBuilder().setMessageId(2).setTimestamp(timestamp).setServiceName(Processor.CLOSE_CASHIER).build()
+        val envelope = Ecr.EcrEnvelope.newBuilder().setVersion(Processor.VERSION).setRequest(request).build()
+        Processor.printRequest(envelope)
+        val byteArray = envelope.toByteArray()
+        ThreadPoolManager.executeCacheTask { ConnectionCore.send(byteArray) }
     }
 }
